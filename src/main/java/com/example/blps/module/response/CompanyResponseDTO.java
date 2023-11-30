@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class CompanyResponseDTO implements Serializable, Comparable<CompanyResponseDTO> {
 
 	@NotBlank(message = "Название организации не может быть пустым")
-	private String org_name;
+	private String orgName;
 
 	@Size(min = 10, max = 10, message = "ИНН должен содержать 10 цифр")
 	private String inn;
@@ -36,6 +36,6 @@ public class CompanyResponseDTO implements Serializable, Comparable<CompanyRespo
 
 	@Override
 	public int compareTo(CompanyResponseDTO companyResponseDTO) {
-		return org_name.compareTo(companyResponseDTO.getOrg_name());
+		return orgName.compareTo(companyResponseDTO.getOrgName());
 	}
 }

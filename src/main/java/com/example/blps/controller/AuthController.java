@@ -2,8 +2,8 @@ package com.example.blps.controller;
 
 import com.example.blps.exceptions.RefreshTokenException;
 import com.example.blps.exceptions.ResourceAlreadyExistsException;
-import com.example.blps.module.RefreshToken;
-import com.example.blps.module.User;
+import com.example.blps.module.entity.RefreshToken;
+import com.example.blps.module.entity.User;
 import com.example.blps.module.request.LogInRequestDTO;
 import com.example.blps.module.request.LogOutRequestDTO;
 import com.example.blps.module.request.RefreshTokenRequestDTO;
@@ -15,7 +15,7 @@ import com.example.blps.repo.UserRepository;
 import com.example.blps.security.jwt.JwtUtils;
 import com.example.blps.security.module.UserDetailsImpl;
 import com.example.blps.security.service.RefreshTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,22 +33,14 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "${cors.urls}")
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-	@Autowired
-	AuthenticationManager authenticationManager;
-
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
-	PasswordEncoder encoder;
-
-	@Autowired
-	RefreshTokenService refreshTokenService;
-
-	@Autowired
-	JwtUtils jwtUtils;
+	private final AuthenticationManager authenticationManager;
+	private final UserRepository userRepository;
+	private final PasswordEncoder encoder;
+	private final RefreshTokenService refreshTokenService;
+	private final JwtUtils jwtUtils;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LogInRequestDTO loginRequestDto) {
@@ -56,15 +48,10 @@ public class AuthController {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequestDto.getEmail(), loginRequestDto.getPassword()));
-
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
 		String jwt = jwtUtils.generateJwtToken(userDetails);
-
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-
 		return ResponseEntity.ok(new JwtResponseDTO(jwt, refreshToken.getToken(), userDetails.getId(),
 				userDetails.getUsername()));
 
@@ -88,15 +75,12 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequestDTO signUpRequest) {
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new ResourceAlreadyExistsException("Данный email уже занят");
-        }
-
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			throw new ResourceAlreadyExistsException("Данный email уже занят");
+		}
 		User user = new User(signUpRequest.getEmail(),
 				encoder.encode(signUpRequest.getPassword()));
-
 		userRepository.save(user);
-
 		return ResponseEntity.ok(new MessageResponseDTO("Пользователь зарегистрирован успешно"));
 	}
 

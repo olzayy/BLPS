@@ -1,7 +1,7 @@
 package com.example.blps.repo;
 
-import com.example.blps.module.RefreshToken;
-import com.example.blps.module.User;
+import com.example.blps.module.entity.RefreshToken;
+import com.example.blps.module.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;

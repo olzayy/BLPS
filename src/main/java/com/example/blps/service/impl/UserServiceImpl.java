@@ -1,18 +1,18 @@
 package com.example.blps.service.impl;
 
-import com.example.blps.module.User;
+import com.example.blps.module.entity.User;
 import com.example.blps.repo.UserRepository;
 import com.example.blps.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	public User saveUser(User user) {

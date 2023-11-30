@@ -1,6 +1,6 @@
 package com.example.blps.security.module;
 
-import com.example.blps.module.User;
+import com.example.blps.module.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

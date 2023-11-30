@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class CompanyRequestDTO implements Serializable {
 
 	@NotBlank(message = "Название организации не может быть пустым")
-	private final String org_name;
+	private final String orgName;
 
 	@Size(min = 10, max = 10, message = "ИНН должен содержать 10 цифр")
 	private final String inn;

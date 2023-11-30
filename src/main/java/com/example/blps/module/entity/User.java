@@ -1,4 +1,4 @@
-package com.example.blps.module;
+package com.example.blps.module.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;

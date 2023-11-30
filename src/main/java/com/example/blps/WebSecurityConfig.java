@@ -3,7 +3,7 @@ package com.example.blps;
 import com.example.blps.security.jwt.AuthEntryPointJwt;
 import com.example.blps.security.jwt.AuthTokenFilter;
 import com.example.blps.security.module.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,13 +20,11 @@ import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
-
-	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+	private final UserDetailsServiceImpl userDetailsService;
+	private final AuthEntryPointJwt unauthorizedHandler;
 
 	@Bean
 	public Filter authenticationJwtTokenFilter() {

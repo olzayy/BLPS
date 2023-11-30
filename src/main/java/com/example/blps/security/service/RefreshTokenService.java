@@ -1,9 +1,10 @@
 package com.example.blps.security.service;
 
 import com.example.blps.exceptions.RefreshTokenException;
-import com.example.blps.module.RefreshToken;
+import com.example.blps.module.entity.RefreshToken;
 import com.example.blps.repo.RefreshTokenRepository;
 import com.example.blps.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,16 +15,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
 
 	@Value("${token.refresh_time}")
 	private Long refreshTokenDurationMs;
 
-	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
-
-	@Autowired
-	private UserRepository userRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
+	private final UserRepository userRepository;
 
 	public Optional<RefreshToken> findByToken(String token) {
 		return refreshTokenRepository.findByToken(token);

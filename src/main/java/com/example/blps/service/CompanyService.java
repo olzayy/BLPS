@@ -1,9 +1,8 @@
 package com.example.blps.service;
 
-import com.example.blps.module.Company;
+import com.example.blps.module.entity.Company;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CompanyService {
 
@@ -11,7 +10,7 @@ public interface CompanyService {
 
 	void addNewCompanyWithEmail(Company company);
 
-	List<Company> findAllbyParams(Optional<String> org_name, Optional<String> inn, Optional<String> ogrn);
+	List<Company> findAllbyParams(String org_name, String inn, String ogrn);
 
 	List<Company> findAllUnacceptable(String email);
 

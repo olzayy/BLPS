@@ -1,6 +1,6 @@
 package com.example.blps.service;
 
-import com.example.blps.module.User;
+import com.example.blps.module.entity.User;
 
 import java.util.Optional;
 
