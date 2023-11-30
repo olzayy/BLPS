@@ -17,44 +17,45 @@ import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
-    @Autowired
-    CompanyRepository companyRepository;
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	CompanyRepository companyRepository;
 
-    @Override
-    public List<Company> findAllCompaniesByEmail(String email) {
-        return companyRepository.findAllByUserEmail(email);
-    }
+	@Autowired
+	UserService userService;
 
-    @Override
-    @Transactional
-    public void addNewCompanyWithEmail(Company company) {
-        User user = userService.findUserByEmail(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("Error: Пользователь не найден"));
+	@Override
+	public List<Company> findAllCompaniesByEmail(String email) {
+		return companyRepository.findAllByUserEmail(email);
+	}
 
-        user.getCompanies().add(company);
-        company.setUser(user);
-    }
+	@Override
+	@Transactional
+	public void addNewCompanyWithEmail(Company company) {
+		User user = userService.findUserByEmail(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername())
+				.orElseThrow(() -> new ResourceNotFoundException("Error: Пользователь не найден"));
 
-    @Override
-    public List<Company> findAllbyParams(Optional<String> org_name, Optional<String> inn, Optional<String> ogrn) {
-        return companyRepository.findAllByOrg_nameOrInnOrOgrn(org_name, inn, ogrn);
-    }
+		user.getCompanies().add(company);
+		company.setUser(user);
+	}
 
-    @Override
-    public List<Company> findAllUnacceptable(String email) {
-        return companyRepository.findAllUnacceptable(email);
-    }
+	@Override
+	public List<Company> findAllbyParams(Optional<String> org_name, Optional<String> inn, Optional<String> ogrn) {
+		return companyRepository.findAllByOrg_nameOrInnOrOgrn(org_name, inn, ogrn);
+	}
 
-    @Override
-    public Company findCompanyByInn(String inn) {
-        return companyRepository.findCompanyByInn(inn);
-    }
+	@Override
+	public List<Company> findAllUnacceptable(String email) {
+		return companyRepository.findAllUnacceptable(email);
+	}
 
-    @Override
-    public void updateCompanyByInn(String inn, Integer rate) {
-        companyRepository.updateCompanyByInn(inn, rate);
-    }
+	@Override
+	public Company findCompanyByInn(String inn) {
+		return companyRepository.findCompanyByInn(inn);
+	}
+
+	@Override
+	public void updateCompanyByInn(String inn, Integer rate) {
+		companyRepository.updateCompanyByInn(inn, rate);
+	}
 }

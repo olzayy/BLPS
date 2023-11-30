@@ -9,31 +9,33 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyResponseDTO implements Serializable, Comparable<CompanyResponseDTO> {
-    @NotBlank(message = "Название организации не может быть пустым")
-    private String org_name;
 
-    @Size(min = 10, max = 10, message = "ИНН должен содержать 10 цифр")
-    private String inn;
+	@NotBlank(message = "Название организации не может быть пустым")
+	private String org_name;
 
-    @Size(min = 13, max = 13, message = "ОГРН должен содержать 13 цифр")
-    private String ogrn;
+	@Size(min = 10, max = 10, message = "ИНН должен содержать 10 цифр")
+	private String inn;
 
-    @NotNull(message = "Номер телефона не может быть пустым")
-    @Pattern(regexp="(^$|[0-9]{11})", message = "Номер телефона должен быть введен корректно!")
-    private String phone;
+	@Size(min = 13, max = 13, message = "ОГРН должен содержать 13 цифр")
+	private String ogrn;
 
-    private String website;
+	@NotNull(message = "Номер телефона не может быть пустым")
+	@Pattern(regexp = "(^$|[0-9]{11})", message = "Номер телефона должен быть введен корректно!")
+	private String phone;
 
-    private String description;
+	private String website;
 
-    private String belief;
+	private String description;
 
-    @Override
-    public int compareTo(CompanyResponseDTO companyResponseDTO) {
-        return org_name.compareTo(companyResponseDTO.getOrg_name());
-    }
+	private String belief;
+
+	@Override
+	public int compareTo(CompanyResponseDTO companyResponseDTO) {
+		return org_name.compareTo(companyResponseDTO.getOrg_name());
+	}
 }

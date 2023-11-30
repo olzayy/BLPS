@@ -6,9 +6,10 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class LogInRequestDTO {
-    @NotBlank
-    private String email;
 
-    @NotBlank
-    private String password;
+	@NotBlank
+	private String email;
+
+	@NotBlank
+	private String password;
 }

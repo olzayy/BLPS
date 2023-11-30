@@ -6,15 +6,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CompanyService {
-    List<Company> findAllCompaniesByEmail(String email);
 
-    void addNewCompanyWithEmail(Company company);
+	List<Company> findAllCompaniesByEmail(String email);
 
-    List<Company> findAllbyParams(Optional<String> org_name,Optional<String> inn, Optional<String> ogrn);
+	void addNewCompanyWithEmail(Company company);
 
-    List<Company> findAllUnacceptable(String email);
+	List<Company> findAllbyParams(Optional<String> org_name, Optional<String> inn, Optional<String> ogrn);
 
-    Company findCompanyByInn(String inn);
+	List<Company> findAllUnacceptable(String email);
 
-    void updateCompanyByInn(String inn, Integer rate);
+	Company findCompanyByInn(String inn);
+
+	void updateCompanyByInn(String inn, Integer rate);
 }

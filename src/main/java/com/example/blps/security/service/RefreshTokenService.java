@@ -15,41 +15,42 @@ import java.util.UUID;
 
 @Service
 public class RefreshTokenService {
-    @Value("${token.refresh_time}")
-    private Long refreshTokenDurationMs;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+	@Value("${token.refresh_time}")
+	private Long refreshTokenDurationMs;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private RefreshTokenRepository refreshTokenRepository;
 
-    public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepository.findByToken(token);
-    }
+	@Autowired
+	private UserRepository userRepository;
 
-    public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
+	public Optional<RefreshToken> findByToken(String token) {
+		return refreshTokenRepository.findByToken(token);
+	}
 
-        refreshToken.setUser(userRepository.findById(userId).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-        refreshToken.setToken(UUID.randomUUID().toString());
+	public RefreshToken createRefreshToken(Long userId) {
+		RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshToken;
-    }
+		refreshToken.setUser(userRepository.findById(userId).get());
+		refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+		refreshToken.setToken(UUID.randomUUID().toString());
 
-    public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(token);
-            throw new RefreshTokenException(token.getToken(), "Refresh token истек. Пожалуйста, войдите еще раз");
-        }
+		refreshToken = refreshTokenRepository.save(refreshToken);
+		return refreshToken;
+	}
 
-        return token;
-    }
+	public RefreshToken verifyExpiration(RefreshToken token) {
+		if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+			refreshTokenRepository.delete(token);
+			throw new RefreshTokenException(token.getToken(), "Refresh token истек. Пожалуйста, войдите еще раз");
+		}
 
-    @Transactional
-    public int deleteByUserId(Long userId) {
-        return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
-    }
+		return token;
+	}
+
+	@Transactional
+	public int deleteByUserId(Long userId) {
+		return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
+	}
 }

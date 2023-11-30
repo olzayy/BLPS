@@ -22,7 +22,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -30,72 +34,75 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+	@Autowired
+	AuthenticationManager authenticationManager;
 
-    @Autowired
-    PasswordEncoder encoder;
+	@Autowired
+	UserRepository userRepository;
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
+	@Autowired
+	PasswordEncoder encoder;
 
-    @Autowired
-    JwtUtils jwtUtils;
+	@Autowired
+	RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LogInRequestDTO loginRequestDto) {
+	@Autowired
+	JwtUtils jwtUtils;
 
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
+	@PostMapping("/signin")
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LogInRequestDTO loginRequestDto) {
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						loginRequestDto.getEmail(), loginRequestDto.getPassword()));
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtUtils.generateJwtToken(userDetails);
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+		String jwt = jwtUtils.generateJwtToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponseDTO(jwt, refreshToken.getToken(), userDetails.getId(),
-                userDetails.getUsername()));
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-    }
+		return ResponseEntity.ok(new JwtResponseDTO(jwt, refreshToken.getToken(), userDetails.getId(),
+				userDetails.getUsername()));
 
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody RefreshTokenRequestDTO request) {
-        String requestRefreshToken = request.getRefreshToken();
+	}
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getEmail());
-                    return ResponseEntity.ok(new RefreshTokenResponseDTO(token, requestRefreshToken));
-                })
-                .orElseThrow(() -> new RefreshTokenException(requestRefreshToken,
-                        "Refresh Token нет в базе"));
-    }
+	@PostMapping("/refreshtoken")
+	public ResponseEntity<?> refreshtoken(@Valid @RequestBody RefreshTokenRequestDTO request) {
+		String requestRefreshToken = request.getRefreshToken();
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequestDTO signUpRequest) {
+		return refreshTokenService.findByToken(requestRefreshToken)
+				.map(refreshTokenService::verifyExpiration)
+				.map(RefreshToken::getUser)
+				.map(user -> {
+					String token = jwtUtils.generateTokenFromUsername(user.getEmail());
+					return ResponseEntity.ok(new RefreshTokenResponseDTO(token, requestRefreshToken));
+				})
+				.orElseThrow(() -> new RefreshTokenException(requestRefreshToken,
+						"Refresh Token нет в базе"));
+	}
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail()))
+	@PostMapping("/signup")
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequestDTO signUpRequest) {
+
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new ResourceAlreadyExistsException("Данный email уже занят");
+        }
 
-        User user = new User(signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+		User user = new User(signUpRequest.getEmail(),
+				encoder.encode(signUpRequest.getPassword()));
 
-        userRepository.save(user);
+		userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponseDTO("Пользователь зарегистрирован успешно"));
-    }
+		return ResponseEntity.ok(new MessageResponseDTO("Пользователь зарегистрирован успешно"));
+	}
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser(@Valid @RequestBody LogOutRequestDTO logOutRequest) {
-        refreshTokenService.deleteByUserId(logOutRequest.getUserId());
-        return ResponseEntity.ok(new MessageResponseDTO("Выход из аккаунта осуществлен успешно"));
-    }
+	@PostMapping("/logout")
+	public ResponseEntity<?> logoutUser(@Valid @RequestBody LogOutRequestDTO logOutRequest) {
+		refreshTokenService.deleteByUserId(logOutRequest.getUserId());
+		return ResponseEntity.ok(new MessageResponseDTO("Выход из аккаунта осуществлен успешно"));
+	}
 }

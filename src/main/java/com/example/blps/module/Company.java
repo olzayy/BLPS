@@ -5,7 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -16,46 +24,47 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Table(name = "company", schema = "public")
 public class Company {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference
-    private User user;
+	@Id
+	@Column
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotBlank
-    private String org_name;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JsonBackReference
+	private User user;
 
-    @NotBlank
-    @Size(min = 10, max = 10)
-    @Column
-    private String inn;
+	@NotBlank
+	private String org_name;
 
-    @NotBlank
-    @Size(min = 13, max = 13)
-    @Column
-    private String ogrn;
+	@NotBlank
+	@Size(min = 10, max = 10)
+	@Column
+	private String inn;
 
-    @Pattern(regexp="(^$|[0-9]{11})")
-    @Column
-    private String phone;
+	@NotBlank
+	@Size(min = 13, max = 13)
+	@Column
+	private String ogrn;
 
-    @Column
-    private String website;
+	@Pattern(regexp = "(^$|[0-9]{11})")
+	@Column
+	private String phone;
 
-    @Column
-    private String description;
+	@Column
+	private String website;
 
-    @Column
-    private Boolean acceptable;
+	@Column
+	private String description;
 
-    @Column
-    private Integer rating;
+	@Column
+	private Boolean acceptable;
 
-    
-    @Column
-    private String belief;
+	@Column
+	private Integer rating;
+
+
+	@Column
+	private String belief;
 }
