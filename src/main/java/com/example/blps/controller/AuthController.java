@@ -58,7 +58,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/refreshtoken")
-	public ResponseEntity<?> refreshtoken(@Valid @RequestBody RefreshTokenRequestDTO request) {
+	public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDTO request) {
 		String requestRefreshToken = request.getRefreshToken();
 
 		return refreshTokenService.findByToken(requestRefreshToken)

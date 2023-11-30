@@ -1,11 +1,13 @@
 package com.example.blps.module.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,9 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "user", schema = "public")
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class User {
 
 	@Id
@@ -39,13 +42,10 @@ public class User {
 	@Size(max = 128)
 	private String password;
 
-	@OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
 	@ToString.Exclude
 	@JsonManagedReference
 	private Set<Company> companies = new HashSet<>();
-
-	public User() {
-	}
 
 	public User(String email, String password) {
 		this.email = email;
